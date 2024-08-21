@@ -4,7 +4,7 @@ using ManageMossadAgentsApi.Models;
 
 namespace ManageMossadAgentsApi.Data
 {
-    public class MossadDbContext: DbContext
+    public class MossadDbContext : DbContext
     {
         public MossadDbContext(DbContextOptions<MossadDbContext> options)
        : base(options)
@@ -16,13 +16,15 @@ namespace ManageMossadAgentsApi.Data
 
                     if (targets.Count() == 0)
                     {
-                        Seed();
+                        Seedtarget();
                     }
-                    else
+                    if (agents.Count() == 0)
                     {
-
+                        Seedagent();
                     }
                 }
+                   
+                
             }
             catch (Exception ex)
             {
@@ -33,17 +35,30 @@ namespace ManageMossadAgentsApi.Data
         }
 
 
-        private void Seed()
+        private void Seedtarget()
         {
             Target target = new Target
             {
                 Name = "Ismael",
                 Position = "Recruit To HamasAlquada Squad",
-                Status = "Alive"
+                Status = Enum.EnumStatusTarget.Alive,
+            };
+
+
+
+        }
+        private void Seedagent()
+        {
+            Agent agent = new Agent
+            {
+                Nickname = "Islam",
+                photo = "Url.df",
+                Status = Enum.EnumSatusAgent.Inactive,
             };
         }
 
         public DbSet<Target> targets { get; set; }
+        public DbSet<Agent> agents { get; set; }
     }
 }
 

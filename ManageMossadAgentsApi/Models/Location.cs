@@ -10,11 +10,12 @@ namespace ManageMossadAgentsApi.Models
 
 
 
+        [Range(0,1000)]
+        public int x { get; set; }
+        [Range(0, 1000)]
+        public int y { get; set; }
 
-        public double x { get; set; }
-        public double y { get; set; }
-
-        public Location(double x, double y)
+        public Location(int x, int y)
         {
             this.x = x;
             this.y = y;

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ManageMossadAgentsApi.Enum;
 
 namespace ManageMossadAgentsApi.Models
 {
@@ -9,13 +10,9 @@ namespace ManageMossadAgentsApi.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Position { get; set; }
-        public string Status { get; set; } 
+        public EnumStatusTarget? Status { get; set; } 
         public Location? Location { get; set; }
-
-        public string? Direction { get; set; }
-
-
-
+     
     }
    
 }
