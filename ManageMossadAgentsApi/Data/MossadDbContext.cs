@@ -57,8 +57,8 @@ namespace ManageMossadAgentsApi.Data
             };
         }
 
-        public DbSet<Target> targets { get; set; }
-        public DbSet<Agent> agents { get; set; }
+        public DbSet<Target> targets { get; set; } = default;
+        public DbSet<Agent> agents { get; set; } = default;
     }
 }
 

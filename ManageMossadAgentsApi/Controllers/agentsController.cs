@@ -2,7 +2,7 @@
 using ManageMossadAgentsApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ManageMossadAgentsApi.Models;
+using ManageMossadAgentsApi.Interace;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -40,6 +40,16 @@ namespace ManageMossadAgentsApi.Controllers
 
 
             _context.agents.Add(agent);
+            CalculateDistance cal = new CalculateDistance();
+           double distance =  cal.Distance(agent.Location);
+            if (distance > 200)
+            {
+                Missions missions = new Missions
+                {
+                        missions.
+                };
+            }
+
             _context.SaveChanges();
             Console.WriteLine("Got inside the function of creating attack");
             return StatusCode(

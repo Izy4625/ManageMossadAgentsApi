@@ -9,11 +9,11 @@ namespace ManageMossadAgentsApi.Models
         [Key]
         public int Id { get; set; }
 
-        public Location AgentLocation { get; set; }
+        public int AgentId { get; set; }
 
-        public Location TargetLocation { get; set; }
+        public int TargetId { get; set; }
 
-        public TimeOnly? MissionTimer { get; set; }
+        public double? MissionTimer { get; set; }
         
         public EnumSatusMissions Status { get; set; }
 
