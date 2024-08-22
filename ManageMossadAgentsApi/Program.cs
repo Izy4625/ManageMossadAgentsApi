@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 string? ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MossadDbContext>(option => option.UseSqlServer(ConnectionStrings));
 builder.Services.AddScoped<Service>();
+builder.Services.AddScoped<MissionManager>();
 
 var app = builder.Build();
 

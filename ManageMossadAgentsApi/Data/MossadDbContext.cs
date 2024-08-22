@@ -52,13 +52,14 @@ namespace ManageMossadAgentsApi.Data
             Agent agent = new Agent
             {
                 Nickname = "Islam",
-                photo = "Url.df",
+                PhotoUrl = "Url.df",
                 Status = Enum.EnumSatusAgent.Inactive,
             };
         }
 
         public DbSet<Target> targets { get; set; } = default;
         public DbSet<Agent> agents { get; set; } = default;
+        public DbSet<Mission> missions { get; set; } = default;
     }
 }
 

@@ -23,14 +23,14 @@ namespace ManageMossadAgentsApi.Controllers
 
         // GET: api/missions
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Missions>>> GetMissions()
+        public async Task<ActionResult<IEnumerable<Mission>>> GetMissions()
         {
             return await _context.Missions.ToListAsync();
         }
 
         // GET: api/missions/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Missions>> GetMissions(int id)
+        public async Task<ActionResult<Mission>> GetMissions(int id)
         {
             var missions = await _context.Missions.FindAsync(id);
 
@@ -45,7 +45,7 @@ namespace ManageMossadAgentsApi.Controllers
         // PUT: api/missions/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMissions(int id, Missions missions)
+        public async Task<IActionResult> PutMissions(int id, Mission missions)
         {
             if (id != missions.Id)
             {
@@ -76,7 +76,7 @@ namespace ManageMossadAgentsApi.Controllers
         // POST: api/missions
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Missions>> PostMissions(Missions missions)
+        public async Task<ActionResult<Mission>> MissionsUpdate(Mission missions)
         {
             _context.Missions.Add(missions);
             await _context.SaveChangesAsync();

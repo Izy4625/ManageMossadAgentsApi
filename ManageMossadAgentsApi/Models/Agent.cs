@@ -10,7 +10,7 @@ namespace ManageMossadAgentsApi.Models
 
         public string Nickname { get; set; }
 
-        public string photo {  get; set; }
+        public string PhotoUrl {  get; set; }
         public Location? Location { get; set; }
 
         public EnumSatusAgent? Status { get; set; }

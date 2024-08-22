@@ -8,13 +8,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("/[controller]")]
     [ApiController]
     public class agentsController : ControllerBase
     {
 
         private readonly MossadDbContext _context;
         private readonly Service _services;
+        private readonly MissionManager _missionManager;
 
         public agentsController(MossadDbContext context, Service service)
         {
@@ -37,31 +38,27 @@ namespace ManageMossadAgentsApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //[HttpPost]
-        //[Produces("application/json")]
-        //[ProducesResponseType(StatusCodes.Status201Created)]
-        //public IActionResult CreateAgent(Agent agent)
-        //{
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public IActionResult CreateAgent(Agent agent)
+        {
 
 
-        //    _context.agents.Add(agent);
-        //    CalculateDistance cal = new CalculateDistance();
-        //   double distance =  cal.Distance(agent.Location);
-        //    if (distance > 200)
-        //    {
-        //        Missions missions = new Missions
-        //        {
-        //                missions.
-        //        };
-        //    }
+            _context.agents.Add(agent);
+            _context.SaveChanges();
 
-        //    _context.SaveChanges();
-        //    Console.WriteLine("Got inside the function of creating attack");
-        //    return StatusCode(
-        //        StatusCodes.Status201Created,
-        //        new { success = true, agent = agent }
-        //        );
-        //}
+
+            //_missionManager.HandleMissions(1, agent.Location);
+        
+
+          
+            Console.WriteLine("Got inside the function of creating attack");
+            return StatusCode(
+                StatusCodes.Status201Created,
+                new { success = true, agent = agent }
+                );
+        }
         [HttpPut("{id}/pin")]
         public async Task<IActionResult> putpin(int id, Location location)
         {

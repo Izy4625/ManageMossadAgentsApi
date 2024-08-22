@@ -15,6 +15,6 @@ namespace ManageMossadAgentsApi.Data
         }
 
         public DbSet<ManageMossadAgentsApi.Models.Agent> Agent { get; set; } = default!;
-        public DbSet<ManageMossadAgentsApi.Models.Missions> Missions { get; set; } = default!;
+        public DbSet<ManageMossadAgentsApi.Models.Mission> Missions { get; set; } = default!;
     }
 }
