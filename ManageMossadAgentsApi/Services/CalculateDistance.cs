@@ -2,7 +2,7 @@
 using ManageMossadAgentsApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ManageMossadAgentsApi.Interace
+namespace ManageMossadAgentsApi.Services
 {
     internal class CalculateDistance
     {

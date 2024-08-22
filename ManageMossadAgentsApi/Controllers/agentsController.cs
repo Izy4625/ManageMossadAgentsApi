@@ -2,7 +2,9 @@
 using ManageMossadAgentsApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ManageMossadAgentsApi.Interace;
+using ManageMossadAgentsApi.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -12,14 +14,17 @@ namespace ManageMossadAgentsApi.Controllers
     {
 
         private readonly MossadDbContext _context;
+        private readonly Service _services;
 
-        public agentsController(MossadDbContext context)
+        public agentsController(MossadDbContext context, Service service)
         {
             _context = context;
+            _services = service;
         }
         [HttpGet]
         public async Task<IActionResult> GetAgents()
         {
+            
             try
             {
                 var attacks =  _context.agents.ToList();
@@ -32,30 +37,78 @@ namespace ManageMossadAgentsApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPost]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreateAgent(Agent agent)
+        //[HttpPost]
+        //[Produces("application/json")]
+        //[ProducesResponseType(StatusCodes.Status201Created)]
+        //public IActionResult CreateAgent(Agent agent)
+        //{
+
+
+        //    _context.agents.Add(agent);
+        //    CalculateDistance cal = new CalculateDistance();
+        //   double distance =  cal.Distance(agent.Location);
+        //    if (distance > 200)
+        //    {
+        //        Missions missions = new Missions
+        //        {
+        //                missions.
+        //        };
+        //    }
+
+        //    _context.SaveChanges();
+        //    Console.WriteLine("Got inside the function of creating attack");
+        //    return StatusCode(
+        //        StatusCodes.Status201Created,
+        //        new { success = true, agent = agent }
+        //        );
+        //}
+        [HttpPut("{id}/pin")]
+        public async Task<IActionResult> putpin(int id, Location location)
         {
-
-
-            _context.agents.Add(agent);
-            CalculateDistance cal = new CalculateDistance();
-           double distance =  cal.Distance(agent.Location);
-            if (distance > 200)
+            if (location == null)
             {
-                Missions missions = new Missions
-                {
-                        missions.
-                };
+                return BadRequest();
             }
-
+            Agent agent = await _context.agents.FindAsync(id);
+            if (agent == null)
+            {
+                return BadRequest($"Unable to find agent by given {id}");
+            }
+            agent.Location = location;
+            _context.Update(agent);
             _context.SaveChanges();
-            Console.WriteLine("Got inside the function of creating attack");
-            return StatusCode(
-                StatusCodes.Status201Created,
-                new { success = true, agent = agent }
-                );
+            return StatusCode(StatusCodes.Status201Created, new
+            {
+                succes = true,
+                agent = agent
+            });
+        }
+        [HttpPut("{id}/move")]
+        public async  Task<IActionResult> MoveAgent(int id, [FromBody] Direction direction)
+        {
+            string direct = direction.direction;
+         
+            Agent agent = await  _services.Movemanpan(id, direct);
+            if (agent == null)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new
+                {
+                    massege = "Didn't receive anything from the function Movepawn"
+                });
+            }
+            _context.Update(agent);
+            await _context.SaveChangesAsync();
+            
+            
+              var agents = await _context.agents.Include(t => t.Location)?.ToArrayAsync();
+            var agent1 = agents.FirstOrDefault(l => l.Id == id);
+            return StatusCode(StatusCodes.Status200OK, new
+            {
+                success = true, message = agent1
+            });
+
+        }
+
+
         }
     }
-}
