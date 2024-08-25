@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ManageMossadAgentsApi.Models;
 using ManageMossadAgentsApi.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -18,13 +19,13 @@ namespace ManageMossadAgentsApi.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAttacks()
+        public async Task<IActionResult> GetTargewts()
         {
             try
             {
-                var attacks =  _context.targets.ToList();
+                var targets = await _context.agents.Include(t => t.Location)?.ToArrayAsync();
                 Console.WriteLine("inside GetAttacks");
-                return Ok(attacks);
+                return Ok(targets);
             }
             catch (Exception ex)
             {
@@ -38,7 +39,7 @@ namespace ManageMossadAgentsApi.Controllers
         public IActionResult CreateAttack(Target target)
         {
 
-            
+
             _context.targets.Add(target);
             _context.SaveChanges();
             Console.WriteLine("Got inside the function of creating attack");
@@ -46,6 +47,28 @@ namespace ManageMossadAgentsApi.Controllers
                 StatusCodes.Status201Created,
                 new { success = true, attack = target }
                 );
+        }
+        [HttpPut("{id}/pin")]
+        public async Task<IActionResult> putpin(int id, Location location)
+        {
+            if (location == null)
+            {
+                return BadRequest();
+            }
+            var targets = await _context.targets.Include(t => t.Location)?.ToArrayAsync();
+            var target = targets.FirstOrDefault(l => l.Id == id);
+            if (target == null)
+            {
+                return BadRequest($"Unable to find agent by given {id}");
+            }
+            target.Location = location;
+            _context.Update(target);
+            _context.SaveChanges();
+            return StatusCode(StatusCodes.Status201Created, new
+            {
+                succes = true,
+                agent = target
+            });
         }
     }
 }

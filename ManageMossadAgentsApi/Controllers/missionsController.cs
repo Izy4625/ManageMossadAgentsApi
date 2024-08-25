@@ -14,9 +14,9 @@ namespace ManageMossadAgentsApi.Controllers
     [ApiController]
     public class missionsController : ControllerBase
     {
-        private readonly ManageMossadAgentsApiContext _context;
+        private readonly MossadDbContext _context;
 
-        public missionsController(ManageMossadAgentsApiContext context)
+        public missionsController(MossadDbContext context)
         {
             _context = context;
         }
@@ -25,14 +25,14 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Mission>>> GetMissions()
         {
-            return await _context.Missions.ToListAsync();
+            return await _context.missions.ToListAsync();
         }
 
         // GET: api/missions/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Mission>> GetMissions(int id)
         {
-            var missions = await _context.Missions.FindAsync(id);
+            var missions = await _context.missions.FindAsync(id);
 
             if (missions == null)
             {
@@ -78,7 +78,7 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Mission>> MissionsUpdate(Mission missions)
         {
-            _context.Missions.Add(missions);
+            _context.missions.Add(missions);
             await _context.SaveChangesAsync();
 
             return StatusCode(
@@ -91,13 +91,13 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMissions(int id)
         {
-            var missions = await _context.Missions.FindAsync(id);
+            var missions = await _context.missions.FindAsync(id);
             if (missions == null)
             {
                 return NotFound();
             }
 
-            _context.Missions.Remove(missions);
+            _context.missions.Remove(missions);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -105,7 +105,7 @@ namespace ManageMossadAgentsApi.Controllers
 
         private bool MissionsExists(int id)
         {
-            return _context.Missions.Any(e => e.Id == id);
+            return _context.missions.Any(e => e.Id == id);
         }
     }
 }

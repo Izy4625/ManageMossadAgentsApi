@@ -4,8 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using ManageMossadAgentsApi.Controllers;
 using ManageMossadAgentsApi.Services;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ManageMossadAgentsApiContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ManageMossadAgentsApiContext") ?? throw new InvalidOperationException("Connection string 'ManageMossadAgentsApiContext' not found.")));
 
 // Add services to the container.
 
@@ -13,10 +11,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<Service, Service>();
+builder.Services.AddScoped<MissionManager, MissionManager>();
 string? ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MossadDbContext>(option => option.UseSqlServer(ConnectionStrings));
-builder.Services.AddScoped<Service>();
-builder.Services.AddScoped<MissionManager>();
+
+
+
 
 var app = builder.Build();
 

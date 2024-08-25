@@ -22,15 +22,19 @@ namespace ManageMossadAgentsApi.Data
                     {
                         Seedagent();
                     }
-                }
-                   
+                    if (missions.Count() == 0)
+                    {
+                        Seedmission();
+                    }
+
+                }  
                 
             }
             catch (Exception ex)
             {
 
 
-                Console.WriteLine("didnt connect");
+                Console.WriteLine("didnt connect" + ex);
             }
         }
 
@@ -56,10 +60,19 @@ namespace ManageMossadAgentsApi.Data
                 Status = Enum.EnumSatusAgent.Inactive,
             };
         }
+        private void Seedmission()
+        {
+            Mission mission = new Mission
+            {
+                AgentId = 1,
+                TargetId = 1,
+                Status = Enum.EnumSatusMissions.MissionAuthorized,
+            };
+        }
 
-        public DbSet<Target> targets { get; set; } = default;
-        public DbSet<Agent> agents { get; set; } = default;
-        public DbSet<Mission> missions { get; set; } = default;
+        public DbSet<Target> targets { get; set; } 
+        public DbSet<Agent> agents { get; set; } 
+        public DbSet<Mission> missions { get; set; } 
     }
 }
 

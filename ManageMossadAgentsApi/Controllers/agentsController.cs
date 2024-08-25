@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Controllers
 {
-    [Route("/[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class agentsController : ControllerBase
     {
@@ -17,10 +17,11 @@ namespace ManageMossadAgentsApi.Controllers
         private readonly Service _services;
         private readonly MissionManager _missionManager;
 
-        public agentsController(MossadDbContext context, Service service)
+        public agentsController(MossadDbContext context, Service service, MissionManager missionManager)
         {
             _context = context;
             _services = service;
+            _missionManager =missionManager;
         }
         [HttpGet]
         public async Task<IActionResult> GetAgents()
@@ -41,18 +42,17 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreateAgent(Agent agent)
+        public async Task<IActionResult> CreateAgent(Agent agent)
         {
 
 
-            _context.agents.Add(agent);
-            _context.SaveChanges();
-
-
-            //_missionManager.HandleMissions(1, agent.Location);
-        
-
           
+
+
+           await _missionManager.HandleMissions(agent);
+
+
+
             Console.WriteLine("Got inside the function of creating attack");
             return StatusCode(
                 StatusCodes.Status201Created,

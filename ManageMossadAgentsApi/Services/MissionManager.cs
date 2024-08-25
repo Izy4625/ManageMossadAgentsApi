@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Services
 {
-    internal class MissionManager
+    public class MissionManager
     {
 
         private  readonly MossadDbContext _context;
@@ -18,16 +18,21 @@ namespace ManageMossadAgentsApi.Services
         }
         private static List<Target> _targets = new List<Target>();
         private static List<Agent> _agents = new List<Agent>();
-        public  void HandleMissions(int agentsid, Location agentslocation)
+        public  async Task HandleMissions(Agent agent)
         {
-            while (true)
-            { 
-            _targets = _context.targets.ToList();
+
+            _context.agents.Add(agent);
+            _context.SaveChanges();
+            var agents = await _context.agents.Include(t => t.Location)?.ToArrayAsync();
+            var agent1 = agents.FirstOrDefault(l => l.Id == 7);
 
 
-                foreach (Target target in _targets)
+            var targets = await _context.agents.Include(t => t.Location)?.ToArrayAsync();
+
+
+            foreach (var target in targets)
                 {
-                    double amount = CalculateDistance(target.Location, agentslocation);
+                    double amount = CalculateDistance(target.Location, agent1.Location);
 
                     if (amount > 200)
                     {
@@ -38,10 +43,16 @@ namespace ManageMossadAgentsApi.Services
                     {
                         Mission missions = new Mission();
                         {
-                            missions.AgentId = agentsid;
+                            missions.AgentId = 7;
                             missions.TargetId = target.Id;
                             missions.Status = 0;
                             missions.MissionTimer = amount / 5;
+                        try
+                        {
+                            _context.missions.Add(missions);
+                            await _context.SaveChangesAsync();
+                        }
+                        catch (Exception ex) { Console.WriteLine($"cant add new mission to the datbase" + ex); }
                         }
                     }
                     else if (amount == 0)
@@ -49,7 +60,7 @@ namespace ManageMossadAgentsApi.Services
 
                         Console.WriteLine("you need to kill him");
                     }
-                }
+                
 
             }
             //public void UpdaetMissions()
