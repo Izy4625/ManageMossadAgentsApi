@@ -27,7 +27,10 @@ namespace ManageMossadAgentsApi.Services
             {
                 foreach (Agent agent in _agents)
                 {
-                    
+                    if(agent.location == null)
+                    {
+                        continue;
+                    }
                     double amount = CalculateDistance(target.location, agent.location);
 
                     if (amount > 200)
@@ -38,10 +41,10 @@ namespace ManageMossadAgentsApi.Services
                     else if (amount < 200 && amount > 0 || amount == 200)
                     {
                         Mission missions = new Mission();
-                        {
+                        
                             missions.AgentId = agent.Id;
                             missions.TargetId = target.Id;
-                            missions.Status = 0;
+                            missions.Status = EnumSatusMissions.MissionInOperation;
                             missions.MissionTimer = amount / 5;
                             try
                             {
@@ -50,7 +53,7 @@ namespace ManageMossadAgentsApi.Services
                             }
                             catch (Exception ex) { Console.WriteLine($"cant add new mission to the datbase" + ex); }
                         }
-                    }
+                    
                     else if (amount == 0)
                     {
 
@@ -82,7 +85,7 @@ namespace ManageMossadAgentsApi.Services
 
 
         }
-        public double CalculateDistance(location agentslocation, location targetlocation)
+        public static double CalculateDistance(location agentslocation, location targetlocation)
         {
             int y1 = agentslocation.y;
             int x1 = agentslocation.x;

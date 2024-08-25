@@ -26,7 +26,7 @@ namespace ManageMossadAgentsApi.Controllers
         {
             try
             {
-                var targets = await _context.agents.Include(t => t.location)?.ToArrayAsync();
+                var targets = await _context.targets.Include(t => t.location)?.ToArrayAsync();
                 Console.WriteLine("inside GetAttacks");
                 return Ok(targets);
             }
@@ -39,12 +39,12 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public IActionResult CreateTarget(Target target)
+        public async Task<IActionResult> CreateTarget(Target target)
         {
 
 
             _context.targets.Add(target);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             Console.WriteLine("Got inside the function of creating attack");
             return StatusCode(
                 StatusCodes.Status201Created,
@@ -66,8 +66,8 @@ namespace ManageMossadAgentsApi.Controllers
             }
             target.location = location;
             _context.Update(target);
-            _context.SaveChanges();
-            Task.Factory.StartNew(async () =>
+            await _context.SaveChangesAsync();
+           await Task.Run(async () =>
             {
                 await _targetHandler.Handletarget(target);// Whatever code you want in your thread
             });
@@ -91,7 +91,7 @@ namespace ManageMossadAgentsApi.Controllers
                 });
             }
             _context.Update(target);
-            Task.Factory.StartNew(async () =>
+           await Task.Factory.StartNew(async () =>
             {
                 await _targetHandler.Handletarget(target);// Whatever code you want in your thread
             });

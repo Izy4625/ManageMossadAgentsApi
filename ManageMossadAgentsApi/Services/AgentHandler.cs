@@ -26,10 +26,7 @@ namespace ManageMossadAgentsApi.Services
             {
                 foreach (Target target in _targets)
                 {
-                    if(target.Status.EnumStatusTarget)
-                    {
-                        break;
-                    }
+                    
                     double amount = CalculateDistance(target.location, agent.location);
 
                     if (amount > 200)
@@ -40,17 +37,18 @@ namespace ManageMossadAgentsApi.Services
                     else if (amount < 200 && amount > 0 || amount == 200)
                     {
                         Mission missions = new Mission();
-                        {
+
                             missions.AgentId = agent.Id;
                             missions.TargetId = target.Id;
-                            missions.Status = 0;
-                            missions.MissionTimer = amount / 5;
+                            missions.Status = EnumSatusMissions.MissionAuthorized;
+                            missions.MissionTimer = amount / 5; 
                             //try
                             //{
-                            _context.missions.Add(missions);
-                        }
-                        target.Status = 1;
-                               
+                           
+                        
+                        _context.missions.Add(missions);
+
+
                         //    }
                         //    catch (Exception ex) { Console.WriteLine($"cant add new mission to the datbase" + ex); }
                         //}

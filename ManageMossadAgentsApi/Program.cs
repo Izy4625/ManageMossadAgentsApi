@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ManageMossadAgentsApi.Controllers;
 using ManageMossadAgentsApi.Services;
+using ManageMossadAgentsApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,6 +15,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<TargetHandler, TargetHandler>();
 builder.Services.AddScoped<AgentHandler, AgentHandler>();
+builder.Services.AddScoped<UpdateMission, UpdateMission>();
+
 string? ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MossadDbContext>(option => option.UseSqlServer(ConnectionStrings));
 

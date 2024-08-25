@@ -32,9 +32,9 @@ namespace ManageMossadAgentsApi.Controllers
             
             try
             {
-                var attacks = await this._context.agents.ToArrayAsync();
+                var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
                 Console.WriteLine("inside GetAttacks");
-                return Ok(attacks);
+                return Ok(agents);
             }
             catch (Exception ex)
             {
@@ -65,7 +65,8 @@ namespace ManageMossadAgentsApi.Controllers
             {
                 return BadRequest();
             }
-            Agent agent = await _context.agents.FindAsync(id);
+            var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
+            var agent = agents.FirstOrDefault(l => l.Id == id);
             if (agent == null)
             {
                 return BadRequest($"Unable to find agent by given {id}");
@@ -95,6 +96,10 @@ namespace ManageMossadAgentsApi.Controllers
         {
             var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
             var agent = agents.FirstOrDefault(l => l.Id == id);
+            if (agent == null)
+            {
+                return BadRequest();
+            }
             string direct = direction.direction;
             DirectionDict.DirectionActions[direct](agent.location);
 
@@ -109,7 +114,7 @@ namespace ManageMossadAgentsApi.Controllers
             _context.Update(agent);
             await _context.SaveChangesAsync();
            
-            Task.Factory.StartNew(async() =>
+          await   Task.Factory.StartNew(async() =>
             {
                 await _missionManager.Handletargets(agent);// Whatever code you want in your thread
             });
