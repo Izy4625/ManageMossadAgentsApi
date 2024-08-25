@@ -8,20 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManageMossadAgentsApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class agentsController : ControllerBase
     {
 
         private readonly MossadDbContext _context;
-        private readonly Service _services;
-        private readonly MissionManager _missionManager;
+       
+        private readonly AgentHandler _missionManager;
+        
 
-        public agentsController(MossadDbContext context, Service service, MissionManager missionManager)
+
+        public agentsController(MossadDbContext context, AgentHandler missionManager)
         {
             _context = context;
-            _services = service;
-            _missionManager =missionManager;
+    
+            _missionManager = missionManager;
+         
         }
         [HttpGet]
         public async Task<IActionResult> GetAgents()
@@ -29,7 +32,7 @@ namespace ManageMossadAgentsApi.Controllers
             
             try
             {
-                var attacks =  _context.agents.ToList();
+                var attacks = await this._context.agents.ToArrayAsync();
                 Console.WriteLine("inside GetAttacks");
                 return Ok(attacks);
             }
@@ -45,22 +48,18 @@ namespace ManageMossadAgentsApi.Controllers
         public async Task<IActionResult> CreateAgent(Agent agent)
         {
 
-
-          
-
-
-           await _missionManager.HandleMissions(agent);
-
-
-
+            _context.agents.Add(agent);
+           await _context.SaveChangesAsync();
+            //await _missionManager.HandleMissions(agent);
             Console.WriteLine("Got inside the function of creating attack");
             return StatusCode(
-                StatusCodes.Status201Created,
-                new { success = true, agent = agent }
+                StatusCodes.Status200OK,
+                new { Id = agent.Id }
                 );
         }
+
         [HttpPut("{id}/pin")]
-        public async Task<IActionResult> putpin(int id, Location location)
+        public async Task<IActionResult> putpin(int id, location location)
         {
             if (location == null)
             {
@@ -71,9 +70,20 @@ namespace ManageMossadAgentsApi.Controllers
             {
                 return BadRequest($"Unable to find agent by given {id}");
             }
-            agent.Location = location;
+            if (location.y < 0 || location.x < 0 || location.y > 1000 || location.x > 1000)
+            {
+                return BadRequest();
+            };
+            
+            agent.location = location;
             _context.Update(agent);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+           await Task.Run(async () =>
+            {
+                await _missionManager.Handletargets(agent);// Whatever code you want in your thread
+            });
+
+
             return StatusCode(StatusCodes.Status201Created, new
             {
                 succes = true,
@@ -83,9 +93,12 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPut("{id}/move")]
         public async  Task<IActionResult> MoveAgent(int id, [FromBody] Direction direction)
         {
+            var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
+            var agent = agents.FirstOrDefault(l => l.Id == id);
             string direct = direction.direction;
-         
-            Agent agent = await  _services.Movemanpan(id, direct);
+            DirectionDict.DirectionActions[direct](agent.location);
+
+          
             if (agent == null)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, new
@@ -95,13 +108,17 @@ namespace ManageMossadAgentsApi.Controllers
             }
             _context.Update(agent);
             await _context.SaveChangesAsync();
-            
-            
-              var agents = await _context.agents.Include(t => t.Location)?.ToArrayAsync();
-            var agent1 = agents.FirstOrDefault(l => l.Id == id);
+           
+            Task.Factory.StartNew(async() =>
+            {
+                await _missionManager.Handletargets(agent);// Whatever code you want in your thread
+            });
+
+
+
             return StatusCode(StatusCodes.Status200OK, new
             {
-                success = true, message = agent1
+                success = true, message = agent
             });
 
         }

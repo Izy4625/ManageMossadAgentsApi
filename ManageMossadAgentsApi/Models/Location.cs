@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ManageMossadAgentsApi.Models
 {
-    public class Location
+    public class location
     {
         [Key]
         public int Id { get; set; }
@@ -15,7 +15,7 @@ namespace ManageMossadAgentsApi.Models
         [Range(0, 1000)]
         public int y { get; set; }
 
-        public Location(int x, int y)
+        public location(int x, int y)
         {
             this.x = x;
             this.y = y;

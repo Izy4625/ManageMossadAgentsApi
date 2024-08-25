@@ -9,9 +9,11 @@ namespace ManageMossadAgentsApi.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+
+        public string PhotoUrl { get; set; }
         public string Position { get; set; }
         public EnumStatusTarget? Status { get; set; } 
-        public Location? Location { get; set; }
+        public location? location { get; set; }
      
     }
    

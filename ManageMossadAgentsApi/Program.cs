@@ -11,8 +11,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<Service, Service>();
-builder.Services.AddScoped<MissionManager, MissionManager>();
+
+builder.Services.AddScoped<TargetHandler, TargetHandler>();
+builder.Services.AddScoped<AgentHandler, AgentHandler>();
 string? ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MossadDbContext>(option => option.UseSqlServer(ConnectionStrings));
 

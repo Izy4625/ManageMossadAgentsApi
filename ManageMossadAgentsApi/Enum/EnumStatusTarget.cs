@@ -3,6 +3,7 @@
     public enum EnumStatusTarget
     {
         Alive,
+        taken,
         Eliminated
     }
 }
