@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using ManageMossadAgentsApi.Enum;
 using System.Linq.Expressions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ManageMossadAgentsApi.Services
 {
@@ -25,6 +26,7 @@ namespace ManageMossadAgentsApi.Services
             try
             {
                 missions = await _context.missions.ToListAsync();
+               
                 if (missions.Count > 0)
                 {
 
@@ -37,7 +39,7 @@ namespace ManageMossadAgentsApi.Services
                             double a = TargetHandler.CalculateDistance(agent.location, target.location);
                             mission.MissionTimer = a / 5;
                             string dir = GetDirection(target.location, agent.location);
-                            if (!(dir == null))
+                            if (dir.IsNullOrEmpty())
                             {
                                 DirectionDict.DirectionActions[dir](agent.location);
                             }

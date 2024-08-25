@@ -77,6 +77,7 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPut("{id}/move")]
         public async Task<IActionResult> MoveAgent(int id, [FromBody] Direction direction)
         {
+            
             var targets = await _context.targets.Include(t => t.location)?.ToArrayAsync();
             var target = targets.FirstOrDefault(l => l.Id == id);
             string direct = direction.direction;
