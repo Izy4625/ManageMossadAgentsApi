@@ -48,10 +48,8 @@ namespace ManageMossadAgentsApi.Controllers
 
 
                 }).ToList();
-                //Mission[] res = _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
-                //ViewAll view = new ViewAll();
+              
 
-             
                 var json = JsonSerializer.Serialize(item);
                 
                 Console.WriteLine("inside GetAttacks");
@@ -70,10 +68,16 @@ namespace ManageMossadAgentsApi.Controllers
             if (status == null) { return BadRequest(); }
             if (status == "assigned")
             {
-                var mission = await _context.missions.FindAsync(id);
+               
+               var missions = await _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
+                var mission = missions.FirstOrDefault(l => l.Id == id);
+                ViewAll view = new ViewAll();
+
                 if (mission == null) { return BadRequest(); }
+                
                 mission.Status = EnumSatusMissions.MissionInOperation;
                 _context.Entry(mission).State = EntityState.Modified;
+               await _context.SaveChangesAsync();
             }
             return StatusCode(StatusCodes.Status200OK); 
             
@@ -96,16 +100,16 @@ namespace ManageMossadAgentsApi.Controllers
            await _updatemission.MissionUpdateHandler();
             return StatusCode(StatusCodes.Status200OK);
         }
-        [HttpPut("{Id}")]
-        public async Task<IActionResult> StartMission(int Id)
-        {
-            Mission mission = await _context.missions.FirstOrDefaultAsync(x => x.Id == Id);
-            if (mission == null) { return BadRequest(); }
-            mission.Status = Enum.EnumSatusMissions.MissionInOperation;
-            _context.missions.Update(mission);
-            await _context.SaveChangesAsync();
-            return StatusCode(StatusCodes.Status200OK);
-        }
+        //[HttpPut("{Id}")]
+        //public async Task<IActionResult> StartMission(int Id)
+        //{
+        //    Mission mission = await _context.missions.FirstOrDefaultAsync(x => x.Id == Id);
+        //    if (mission == null) { return BadRequest(); }
+        //    mission.Status = Enum.EnumSatusMissions.MissionInOperation;
+        //    _context.missions.Update(mission);
+        //    await _context.SaveChangesAsync();
+        //    return StatusCode(StatusCodes.Status200OK);
+        //}
         // DELETE: api/missions/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMissions(int id)

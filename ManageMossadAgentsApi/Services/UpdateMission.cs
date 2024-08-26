@@ -70,6 +70,7 @@ namespace ManageMossadAgentsApi.Services
                 Console.WriteLine(ex.ToString());
             }
         }
+       
 
         public string GetDirection(location target, location agent)
         {

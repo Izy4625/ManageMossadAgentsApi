@@ -83,6 +83,8 @@ namespace ManageMossadAgentsApi.Controllers
             
             var targets = await _context.targets.Include(t => t.location)?.ToArrayAsync();
             var target = targets.FirstOrDefault(l => l.Id == id);
+            if (target == null) { return BadRequest(); }    
+            if(target.location == null) { return BadRequest (string.Empty); }
             string direct = direction.direction;
             DirectionDict.DirectionActions[direct](target.location);
 

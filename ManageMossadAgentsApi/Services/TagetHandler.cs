@@ -22,14 +22,18 @@ namespace ManageMossadAgentsApi.Services
         
         public async Task Handletarget(Target target)
         {
-           _agents = await _context.agents.Include(t => t.location)?.ToListAsync();
+            if (target.location == null)
+            {
+                return;
+            }
+            _agents = await _context.agents.Include(t => t.location)?.ToListAsync();
             lock (myLock)
             {
                 foreach (Agent agent in _agents)
                 {
-                    if (agent.location == null || target.location == null)
+                    if (agent.location == null)
                     {
-                        continue;
+                        break;
                     }
                     double amount = CalculateDistance(target.location, agent.location);
 
