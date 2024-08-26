@@ -35,6 +35,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+//app.UseWhen(
+//    context =>
+//        context.Request.Path.StartsWithSegments("agents"),
+//    appBuilder =>
+//    {
+//        appBuilder.UseMiddleware<JwtValidationMiddleware>();
+//        //appBuilder.UseMiddleware<JwtValidationMiddleware>();
+//    });
 
 app.MapControllers();
 

@@ -4,6 +4,7 @@ using ManageMossadAgentsApi.Models;
 using ManageMossadAgentsApi.Data;
 using Microsoft.EntityFrameworkCore;
 using ManageMossadAgentsApi.Services;
+using System.Text.Json;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -27,8 +28,10 @@ namespace ManageMossadAgentsApi.Controllers
             try
             {
                 var targets = await _context.targets.Include(t => t.location)?.ToArrayAsync();
+                var json = JsonSerializer.Serialize(targets);
+
                 Console.WriteLine("inside GetAttacks");
-                return Ok(targets);
+                return Ok(json);
             }
             catch (Exception ex)
             {

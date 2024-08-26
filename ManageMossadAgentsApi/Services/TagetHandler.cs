@@ -27,7 +27,7 @@ namespace ManageMossadAgentsApi.Services
             {
                 foreach (Agent agent in _agents)
                 {
-                    if(agent.location == null)
+                    if (agent.location == null || target.location == null)
                     {
                         continue;
                     }
@@ -44,7 +44,7 @@ namespace ManageMossadAgentsApi.Services
                         
                             missions.AgentId = agent.Id;
                             missions.TargetId = target.Id;
-                            missions.Status = EnumSatusMissions.MissionInOperation;
+                            missions.Status = EnumSatusMissions.MissionAuthorized;
                             missions.MissionTimer = amount / 5;
                             try
                             {
@@ -64,25 +64,6 @@ namespace ManageMossadAgentsApi.Services
                 }
             }
             await _context.SaveChangesAsync();
-
-
-            //public void UpdaetMissions()
-            //{
-            //    var _missions = _context.missions.ToList();
-            //    foreach( Mission mission in _missions)
-            //    {
-            //        if(mission.Status == Enum.EnumSatusMissions.MissionInOperation)
-            //        {
-
-
-            //        }
-            //    }
-            //}
-
-
-
-
-
 
         }
         public static double CalculateDistance(location agentslocation, location targetlocation)

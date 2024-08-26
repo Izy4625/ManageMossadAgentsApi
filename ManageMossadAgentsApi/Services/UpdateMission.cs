@@ -41,10 +41,6 @@ namespace ManageMossadAgentsApi.Services
                             string dir = GetDirection(target.location, agent.location);
                             if (dir.IsNullOrEmpty())
                             {
-                                DirectionDict.DirectionActions[dir](agent.location);
-                            }
-                            else
-                            {
 
                                 mission.Status = EnumSatusMissions.MissionCompleted;
                                 agent.Status = EnumSatusAgent.Inactive;
@@ -53,6 +49,11 @@ namespace ManageMossadAgentsApi.Services
                                 _context.missions.Update(mission);
                                 _context.agents.Update(agent);
                                 _context.targets.Update(target);
+                             
+                            }
+                            else
+                            {
+                                DirectionDict.DirectionActions[dir](agent.location);
 
                             }
                             await _context.SaveChangesAsync();

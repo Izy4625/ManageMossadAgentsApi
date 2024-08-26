@@ -29,7 +29,10 @@ namespace ManageMossadAgentsApi.Controllers
             try
             {
                var res = _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
+                ViewAll view = new ViewAll();
+             
                 var json = JsonSerializer.Serialize(res);
+                
                 Console.WriteLine("inside GetAttacks");
                 return Ok(json);
             }
