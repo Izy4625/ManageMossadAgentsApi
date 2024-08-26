@@ -28,10 +28,27 @@ namespace ManageMossadAgentsApi.Controllers
         {
             try
             {
-               var res = _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
-                ViewAll view = new ViewAll();
+                
+                Getsuggestion? item = (
+                from ai in _context.missions
+                join al in _context.agents on ai.AgentId equals al.Id
+                join aj in _context.targets on ai.TargetId equals aj.Id
+                
+
+
+                select new Getsuggestion
+                {
+                    TargetName = aj.Name,
+                    TargetNotes = aj.Position,
+                    AgentNickname = al.Nickname,
+                   
+
+                }).FirstOrDefault();
+                //Mission[] res = _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
+                //ViewAll view = new ViewAll();
+
              
-                var json = JsonSerializer.Serialize(res);
+                var json = JsonSerializer.Serialize(item);
                 
                 Console.WriteLine("inside GetAttacks");
                 return Ok(json);
@@ -41,6 +58,11 @@ namespace ManageMossadAgentsApi.Controllers
                 Console.WriteLine(ex.Message);
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpGet]
+        public async Task<ActionResult> GetmissionDetails(int id)
+        {
+            
         }
 
     
