@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ManageMossadAgentsApi.Enum;
 using System.Text.Json;
+using System.Reflection;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -29,7 +30,7 @@ namespace ManageMossadAgentsApi.Controllers
             try
             {
                 
-                Getsuggestion? item = (
+                List<Getsuggestion>? item = (
                 from ai in _context.missions
                 join al in _context.agents on ai.AgentId equals al.Id
                 join aj in _context.targets on ai.TargetId equals aj.Id
@@ -38,12 +39,15 @@ namespace ManageMossadAgentsApi.Controllers
 
                 select new Getsuggestion
                 {
+                   MissionId = ai.Id,
                     TargetName = aj.Name,
                     TargetNotes = aj.Position,
                     AgentNickname = al.Nickname,
-                   
+                    TimeLeft = ai.MissionTimer,
+                    DistanceOBetween = ai.DistanceBetween,
 
-                }).FirstOrDefault();
+
+                }).ToList();
                 //Mission[] res = _context.missions.Include(t => t.TargetId).Include(t => t.AgentId).ToArrayAsync();
                 //ViewAll view = new ViewAll();
 
@@ -59,13 +63,33 @@ namespace ManageMossadAgentsApi.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet]
-        public async Task<ActionResult> GetmissionDetails(int id)
+        [HttpPut("{id}")]
+        public  async Task<IActionResult> GetmissionDetails(int id, ChangeMissionstatus assign)
         {
+            string status = assign.status;
+            if (status == null) { return BadRequest(); }
+            if (status == "assigned")
+            {
+                var mission = await _context.missions.FindAsync(id);
+                if (mission == null) { return BadRequest(); }
+                mission.Status = EnumSatusMissions.MissionInOperation;
+                _context.Entry(mission).State = EntityState.Modified;
+            }
+            return StatusCode(StatusCodes.Status200OK); 
             
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetDetails(int id)
+        {
+            Mission mission =  this._context.missions.FirstOrDefault(l => l.Id == id);
+            //Mission mission = await _context.missions.FindAsync(id);
+            if (mission == null) {return BadRequest();}
+            var json = JsonSerializer.Serialize(mission);
+            return Ok(json);
 
-    
+        }
+
+
         [HttpPost("update")]
         public async Task<ActionResult> UpdateMissions()
         {

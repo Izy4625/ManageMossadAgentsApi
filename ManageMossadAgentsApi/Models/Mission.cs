@@ -17,6 +17,6 @@ namespace ManageMossadAgentsApi.Models
         public double? MissionTimer { get; set; }
         
         public EnumSatusMissions Status { get; set; }
-
+        public double? DistanceBetween {  get; set; }   
     }
 }

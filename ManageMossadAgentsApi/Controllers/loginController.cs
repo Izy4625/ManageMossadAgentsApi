@@ -50,19 +50,19 @@ namespace ManageMossadAgentsApi.Controllers
 
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public IActionResult Login(Login loginObject)
         {
             if (loginObject.id == "SimulationServer")
-                
+
             {
-                string UserIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                //string UserIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
                 return StatusCode(200
-                    , new { token = GenerateToken(UserIp) }
-                    );
-                return StatusCode(StatusCodes.Status401Unauthorized
-                );
+                    , new { token = "hidksjghskj"/*GenerateToken(UserIp)*/ }
+                    ); 
+              
+                
             }
             return StatusCode(StatusCodes.Status401Unauthorized,
                     new { error = "invalid credentials" });
