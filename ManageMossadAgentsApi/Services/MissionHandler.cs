@@ -21,17 +21,7 @@ namespace ManageMossadAgentsApi.Services
            
         }
        
-
        
-            
-
-              
-            
-            
-            
-            
-
-        
         public async Task MissionUpdateHandler()
         {
             try
@@ -78,8 +68,9 @@ namespace ManageMossadAgentsApi.Services
         {
             var missions = await _context.missions.Include(t => t.Target)?.Include(t => t.Agent)?.Include(t => t.Agent.location)?.Include(t => t.Target.location)?.
                      ToListAsync();
-            bool res = false;
+           
             var mission = missions.FirstOrDefault(l => l.Id == id);
+            bool res = false;
             if (mission == null) { return res; };
 
             if (mission.Target.Status == EnumStatusTarget.Eliminated || mission.Target.Status == EnumStatusTarget.taken) { return res; }

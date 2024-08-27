@@ -59,7 +59,7 @@ namespace ManageMossadAgentsApi.Controllers
             }
         }
         [HttpPut("{id}")]
-        public  async Task<IActionResult> StartMissuion(int id, ChangeMissionstatus assign)
+        public  async Task<IActionResult> StartMission(int id, ChangeMissionstatus assign)
         {
             string status = assign.status;
             if (status == null) { return BadRequest(); }
@@ -79,7 +79,10 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDetails(int id)
         {
-            Mission mission =  this._context.missions.FirstOrDefault(l => l.Id == id);      
+            var missions = await _context.missions.Include(t => t.Target)?.Include(t => t.Agent)?.Include(t => t.Agent.location)?.Include(t => t.Target.location)?.
+                     ToListAsync();
+
+            var mission = missions.FirstOrDefault(l => l.Id == id);
             if (mission == null) {return BadRequest();}
             var json = JsonSerializer.Serialize(mission);
             return Ok(json);

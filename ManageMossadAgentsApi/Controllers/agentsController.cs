@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ManageMossadAgentsApi.Services;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ManageMossadAgentsApi.Controllers
 {
@@ -15,15 +16,15 @@ namespace ManageMossadAgentsApi.Controllers
 
         private readonly MossadDbContext _context;
        
-        private readonly AgentHandler _missionManager;
+        private readonly AgentHandler _agentHandler;
         
 
 
-        public agentsController(MossadDbContext context, AgentHandler missionManager)
+        public agentsController(MossadDbContext context, AgentHandler agentHandler)
         {
             _context = context;
-    
-            _missionManager = missionManager;
+
+            _agentHandler = agentHandler;
          
         }
         [HttpGet]
@@ -82,7 +83,7 @@ namespace ManageMossadAgentsApi.Controllers
             await _context.SaveChangesAsync();
            await Task.Run(async () =>
             {
-                await _missionManager.Handletargets(agent);// Whatever code you want in your thread
+                await _agentHandler.Handletargets(agent);// Whatever code you want in your thread
             });
 
 
@@ -120,8 +121,8 @@ namespace ManageMossadAgentsApi.Controllers
             await _context.SaveChangesAsync();
            
           await   Task.Factory.StartNew(async() =>
-            {
-                await _missionManager.Handletargets(agent);// Whatever code you want in your thread
+          {
+              await _agentHandler.Handletargets(agent);// Whatever code you want in your thread
             });
 
 

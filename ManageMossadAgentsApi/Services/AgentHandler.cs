@@ -48,16 +48,12 @@ namespace ManageMossadAgentsApi.Services
                             missions.Status = EnumSatusMissions.MissionAuthorized;
                             missions.MissionTimer = amount / 5; 
                             missions.DistanceBetween = amount;
-                            //try
-                            //{
+                          
                            
                         
                         _context.missions.Add(missions);
 
 
-                        //    }
-                        //    catch (Exception ex) { Console.WriteLine($"cant add new mission to the datbase" + ex); }
-                        //}
                     }
                     else if (amount == 0)
                     {
@@ -71,23 +67,7 @@ namespace ManageMossadAgentsApi.Services
             await _context.SaveChangesAsync();
 
 
-            //public void UpdaetMissions()
-            //{
-            //    var _missions = _context.missions.ToList();
-            //    foreach( Mission mission in _missions)
-            //    {
-            //        if(mission.Status == Enum.EnumSatusMissions.MissionInOperation)
-            //        {
-
-
-            //        }
-            //    }
-            //}
-
-
-
-
-
+   
 
         }
         public double CalculateDistance(location agentslocation, location targetlocation)

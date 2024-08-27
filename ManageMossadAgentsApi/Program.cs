@@ -35,9 +35,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-//app.UseWhen(
+////app.UseWhen(
 //    context =>
-//        context.Request.Path.StartsWithSegments("agents"),
+//        !context.Request.Path.StartsWithSegments("login"),
 //    appBuilder =>
 //    {
 //        appBuilder.UseMiddleware<JwtValidationMiddleware>();

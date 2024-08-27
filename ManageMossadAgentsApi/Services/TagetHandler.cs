@@ -20,7 +20,7 @@ namespace ManageMossadAgentsApi.Services
         private static List<Agent> _agents = new List<Agent>();
 
         
-        public async Task Handletarget(Target target)
+        public async Task HandleAgents(Target target)
         {
             if (target.location == null)
             {

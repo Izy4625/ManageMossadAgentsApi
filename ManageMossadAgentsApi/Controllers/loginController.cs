@@ -32,7 +32,7 @@ namespace ManageMossadAgentsApi.Controllers
                     }
                 ),
                 // expiration time of the token
-                Expires = DateTime.Now.AddMinutes(10),
+                Expires = DateTime.Now.AddMinutes(1),
                 // the secret key of the token
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
@@ -56,10 +56,10 @@ namespace ManageMossadAgentsApi.Controllers
             if (loginObject.id == "SimulationServer")
 
             {
-                //string UserIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+                string UserIp = HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
 
                 return StatusCode(200
-                    , new { token = "hidksjghskj"/*GenerateToken(UserIp)*/ }
+                    , new { token = GenerateToken(UserIp) }
                     ); 
               
                 

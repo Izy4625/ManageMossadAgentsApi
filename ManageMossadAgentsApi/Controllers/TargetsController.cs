@@ -72,7 +72,7 @@ namespace ManageMossadAgentsApi.Controllers
             await _context.SaveChangesAsync();
            await Task.Run(async () =>
             {
-                await _targetHandler.Handletarget(target);// Whatever code you want in your thread
+                await _targetHandler.HandleAgents(target);// Whatever code you want in your thread
             });
             return StatusCode(StatusCodes.Status201Created);
             
@@ -99,7 +99,7 @@ namespace ManageMossadAgentsApi.Controllers
             _context.Update(target);
            await Task.Factory.StartNew(async () =>
             {
-                await _targetHandler.Handletarget(target);// Whatever code you want in your thread
+                await _targetHandler.HandleAgents(target);// Whatever code you want in your thread
             });
             await _context.SaveChangesAsync();
 
