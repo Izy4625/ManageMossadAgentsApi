@@ -2,7 +2,7 @@
 {
     public enum EnumSatusAgent
     {
-        Inactive,
-         Active
+        Inactive,     
+         Active,
     }
 }

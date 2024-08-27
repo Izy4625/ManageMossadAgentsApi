@@ -75,7 +75,8 @@ namespace ManageMossadAgentsApi.Controllers
             {
                 return BadRequest();
             };
-            
+            if (agent.Status == Enum.EnumSatusAgent.Active) { return BadRequest(); }
+
             agent.location = location;
             _context.Update(agent);
             await _context.SaveChangesAsync();
@@ -103,7 +104,7 @@ namespace ManageMossadAgentsApi.Controllers
             }
         
             if (agent.location == null) { return BadRequest(string.Empty); }
-
+            if(agent.Status == Enum.EnumSatusAgent.Active) { return BadRequest(); }
             string direct = direction.direction;
             DirectionDict.DirectionActions[direct](agent.location);
 

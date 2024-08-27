@@ -9,10 +9,13 @@ namespace ManageMossadAgentsApi.Models
     {
         [Key]
         public int Id { get; set; }
-        [ForeignKey("Agent")]
-        public int AgentId { get; set; }
-        [ForeignKey("Target")]
-        public int TargetId { get; set; }
+        //[ForeignKey("Agent")]
+        //public int AgentId { get; set; }
+        //[ForeignKey("Target")]
+        //public int TargetId { get; set; }
+        public Target? Target { get; set; }
+        public Agent? Agent { get; set; }
+
 
         public double? MissionTimer { get; set; }
         

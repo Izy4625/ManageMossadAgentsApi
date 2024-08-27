@@ -64,8 +64,7 @@ namespace ManageMossadAgentsApi.Data
         {
             Mission mission = new Mission
             {
-                AgentId = 1,
-                TargetId = 1,
+               
                 Status = Enum.EnumSatusMissions.MissionAuthorized,
             };
         }

@@ -43,8 +43,8 @@ namespace ManageMossadAgentsApi.Services
                     {
                         Mission missions = new Mission();
 
-                            missions.AgentId = agent.Id;
-                            missions.TargetId = target.Id;
+                        missions.Agent = agent;
+                        missions.Target = target;
                             missions.Status = EnumSatusMissions.MissionAuthorized;
                             missions.MissionTimer = amount / 5; 
                             missions.DistanceBetween = amount;
