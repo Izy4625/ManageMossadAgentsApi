@@ -16,11 +16,13 @@ namespace ManageMossadAgentsApi.Controllers
 
         private readonly MossadDbContext _context;
         private readonly TargetHandler _targetHandler;
+        private readonly OutOfrangeCheck _outOfrangeCheck;
 
-        public TargetsController(MossadDbContext context, TargetHandler targetHandler)
+        public TargetsController(MossadDbContext context, TargetHandler targetHandler, OutOfrangeCheck outOfrangeCheck)
         {
             _context = context;
             _targetHandler = targetHandler;
+            _outOfrangeCheck = outOfrangeCheck;
         }
         [HttpGet]
         public async Task<IActionResult> GetTargewts()
@@ -61,6 +63,10 @@ namespace ManageMossadAgentsApi.Controllers
             {
                 return BadRequest();
             }
+            if (!(_outOfrangeCheck.Range(location)))
+            {
+                return BadRequest();
+            };
             var targets = await _context.targets.Include(t => t.location)?.ToArrayAsync();
             var target = targets.FirstOrDefault(l => l.Id == id);
             if (target == null)
@@ -87,15 +93,11 @@ namespace ManageMossadAgentsApi.Controllers
             if(target.location == null) { return BadRequest (string.Empty); }
             string direct = direction.direction;
             DirectionDict.DirectionActions[direct](target.location);
-
-
-            if (target == null)
+      
+            if (!(_outOfrangeCheck.Range(target.location)))
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    massege = "Didn't receive anything from the function Movepawn"
-                });
-            }
+                return BadRequest();
+            };
             _context.Update(target);
            await Task.Factory.StartNew(async () =>
             {

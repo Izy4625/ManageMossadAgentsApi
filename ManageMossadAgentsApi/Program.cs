@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<TargetHandler, TargetHandler>();
 builder.Services.AddScoped<AgentHandler, AgentHandler>();
 builder.Services.AddScoped<MissionHandler, MissionHandler>();
+builder.Services.AddScoped<OutOfrangeCheck, OutOfrangeCheck>();
+
 
 string? ConnectionStrings = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MossadDbContext>(option => option.UseSqlServer(ConnectionStrings));
@@ -35,14 +37,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-////app.UseWhen(
-//    context =>
-//        !context.Request.Path.StartsWithSegments("login"),
-//    appBuilder =>
-//    {
-//        appBuilder.UseMiddleware<JwtValidationMiddleware>();
-//        //appBuilder.UseMiddleware<JwtValidationMiddleware>();
-//    });
+
 
 app.MapControllers();
 

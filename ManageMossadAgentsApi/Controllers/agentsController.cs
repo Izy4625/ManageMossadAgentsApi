@@ -17,15 +17,19 @@ namespace ManageMossadAgentsApi.Controllers
         private readonly MossadDbContext _context;
        
         private readonly AgentHandler _agentHandler;
+        private readonly OutOfrangeCheck _outOfrangeCheck;
         
 
 
-        public agentsController(MossadDbContext context, AgentHandler agentHandler)
+        public agentsController(MossadDbContext context, AgentHandler agentHandler, OutOfrangeCheck outOfrangeCheck)
         {
             _context = context;
 
             _agentHandler = agentHandler;
-         
+            _outOfrangeCheck = outOfrangeCheck;
+
+
+
         }
         [HttpGet]
         public async Task<IActionResult> GetAgents()
@@ -66,16 +70,17 @@ namespace ManageMossadAgentsApi.Controllers
             {
                 return BadRequest();
             }
+            if (!(_outOfrangeCheck.Range(location)))
+            {
+                return BadRequest();
+            };
             var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
             var agent = agents.FirstOrDefault(l => l.Id == id);
             if (agent == null)
             {
                 return BadRequest($"Unable to find agent by given {id}");
             }
-            if (location.y < 0 || location.x < 0 || location.y > 1000 || location.x > 1000)
-            {
-                return BadRequest();
-            };
+        
             if (agent.Status == Enum.EnumSatusAgent.Active) { return BadRequest(); }
 
             agent.location = location;
@@ -96,7 +101,7 @@ namespace ManageMossadAgentsApi.Controllers
         [HttpPut("{id}/move")]
         public async  Task<IActionResult> MoveAgent(int id, [FromBody] Direction direction)
         {
-            
+         
             var agents = await _context.agents.Include(t => t.location)?.ToArrayAsync();
             var agent = agents.FirstOrDefault(l => l.Id == id);
             if (agent == null)
@@ -108,21 +113,18 @@ namespace ManageMossadAgentsApi.Controllers
             if(agent.Status == Enum.EnumSatusAgent.Active) { return BadRequest(); }
             string direct = direction.direction;
             DirectionDict.DirectionActions[direct](agent.location);
-
-          
-            if (agent == null)
+            if (!(_outOfrangeCheck.Range(agent.location)))
             {
-                return StatusCode(StatusCodes.Status400BadRequest, new
-                {
-                    massege = "Didn't receive anything from the function Movepawn"
-                });
-            }
+                return BadRequest();
+            };
+
+
             _context.Update(agent);
             await _context.SaveChangesAsync();
            
           await   Task.Factory.StartNew(async() =>
           {
-              await _agentHandler.Handletargets(agent);// Whatever code you want in your thread
+              await _agentHandler.Handletargets(agent);
             });
 
 

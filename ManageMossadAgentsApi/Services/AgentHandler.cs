@@ -45,9 +45,9 @@ namespace ManageMossadAgentsApi.Services
 
                         missions.Agent = agent;
                         missions.Target = target;
-                            missions.Status = EnumSatusMissions.MissionAuthorized;
-                            missions.MissionTimer = amount / 5; 
-                            missions.DistanceBetween = amount;
+                           missions.Status = EnumSatusMissions.MissionAuthorized;
+                           missions.MissionTimer = amount / 5; 
+                          missions.DistanceBetween = amount;
                           
                            
                         
